@@ -3,6 +3,8 @@ import 'package:sezinsoft_demo/constants.dart';
 import 'package:sezinsoft_demo/core/utilities/color_utils.dart';
 import 'package:sezinsoft_demo/core/utilities/font_style_utils.dart';
 import 'package:sezinsoft_demo/size_config.dart';
+import 'package:sezinsoft_demo/view/common_widgets/product_card.dart';
+import 'package:sezinsoft_demo/view/screens/home/model/product/category_model.dart';
 import 'package:sezinsoft_demo/view/screens/home/view_model/home_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
@@ -16,12 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   SharedPreferences? prefs;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  List<Datum> categoryList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
         viewModelBuilder: () => HomeViewModel(context),
         onModelReady: (model) async {
           prefs = await SharedPreferences.getInstance();
-          model.getUser(token: prefs!.getString("token")!);
+          String? token = prefs!.getString("token")!;
+
+          if (token != null) {
+            model.getUser(token: token);
+            await model.getCategories(token: token);
+            model.category!.data.forEach((element) {
+              categoryList.add(element);
+            });
+            model.getProducts(
+                token: token, id: model.category!.data.first.categoryId);
+          }
         },
         builder: ((context, model, child) {
           return Scaffold(
@@ -43,28 +50,98 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               body: Column(
                 children: [
-                  Container(
-                    height: getProportionateScreenHeight(250),
-                    width: double.infinity,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: getProportionateScreenWidth(15)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            model.user!.data.name,
-                            style: FontStyleUtilities.h2(
-                                fontColor: kPrimaryTextColor),
+                  buildTopView(model),
+                  SizedBox(
+                    height: getProportionateScreenHeight(8),
+                  ),
+                  model.busy
+                      ? CircularProgressIndicator()
+                      : Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: getProportionateScreenWidth(15)),
+                          child: SingleChildScrollView(
+                            child: Column(
+                                children: model.products == null
+                                    ? []
+                                    : model.products!.data
+                                        .map((e) => ProductCard(
+                                              title: e.productName,
+                                              image: e.productPhoto,
+                                              description:
+                                                  e.productPrice.toString() +
+                                                      e.productCurrency,
+                                            ))
+                                        .toList()),
                           ),
-                        ],
-                      ),
-                    ),
-                  )
+                        )
                 ],
               ));
         }));
+  }
+
+  Widget buildTopView(HomeViewModel model) {
+    return Container(
+      width: double.infinity,
+      color: Colors.white,
+      child: Padding(
+        padding:
+            EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(15)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              model.user == null ? "" : model.user!.data.name,
+              style: FontStyleUtilities.h2(fontColor: kPrimaryTextColor),
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(16),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: categoryList
+                    .map((e) => InkWell(
+                          onTap: () {
+                            setState(() {
+                              categoryList.forEach((element) {
+                                element.isSelected = false;
+                              });
+                              e.isSelected = true;
+                            });
+                            model.getProducts(
+                                token: prefs!.getString("token")!,
+                                id: e.categoryId);
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: e.isSelected
+                                      ? Colors.black
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(
+                                      getProportionateScreenWidth(12))),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: getProportionateScreenWidth(12),
+                                    vertical: getProportionateScreenHeight(8)),
+                                child: Text(
+                                  e.categoryName,
+                                  style: TextStyle(
+                                      color: e.isSelected
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                              )),
+                        ))
+                    .toList(),
+              ),
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(16),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Padding buildBagButton() {

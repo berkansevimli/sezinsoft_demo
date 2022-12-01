@@ -43,12 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: getProportionateScreenHeight(80)),
                         Text(
                           "Giriş Yap",
-                          style: FontStyleUtilities.h1(
-                            fontColor: Theme.of(context).primaryColor,
+                          style: FontStyleUtilities.h3(
+                            fontColor: kPrimaryTextColor,
                             fontWeight: FWT.bold,
                           ),
                         ),
-                        SizedBox(height: getProportionateScreenHeight(40)),
+                        SizedBox(height: getProportionateScreenHeight(15)),
                         buildUsername(),
                         SizedBox(height: getProportionateScreenHeight(15)),
                         buildPassword(),

@@ -48,4 +48,44 @@ class Api {
       return null;
     }
   }
+
+  Future<dynamic> getCategories(String token) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var newJson = <String, dynamic>{
+        "token": token,
+      };
+      final response = await client.post(
+        Uri.parse(getProductCategoriesURL),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(newJson),
+      );
+      return json.decode(response.body);
+    } catch (e) {
+      if (kDebugMode) print("Could Not Load Data getCategories: $e");
+      return null;
+    }
+  }
+
+  Future<dynamic> getProducts(String token, int id) async {
+    print("get token: " + token);
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var newJson = <String, dynamic>{"token": token, "category_id": id};
+      print("Request: " + newJson.toString());
+      final response = await client.post(
+        Uri.parse(getProductsURL),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(newJson),
+      );
+      return json.decode(response.body);
+    } catch (e) {
+      if (kDebugMode) print("Could Not Load Data getCategories: $e");
+      return null;
+    }
+  }
 }

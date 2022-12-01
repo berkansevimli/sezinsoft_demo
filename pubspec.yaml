@@ -75,7 +75,8 @@ flutter:
     - assets/
     - assets/icons/svg/stroke/
     - assets/icons/svg/solid/
-    - assets/icons/png/
+    - assets/icons/png/ 
+    - assets/icons/
 
   fonts:
     - family: Poppins

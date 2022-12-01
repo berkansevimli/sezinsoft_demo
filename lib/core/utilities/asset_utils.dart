@@ -7,4 +7,5 @@ class AssetUtilities {
   ///CATEGORIES IMAGES..
   static String mailStrokeSvg = _strokeSvgPath + "mail_svg.svg";
   static String lockStrokeSvg = _strokeSvgPath + "lock_svg.svg";
+  static String plusStrokeSvg = _strokeSvgPath + "plus_svg.svg";
 }
