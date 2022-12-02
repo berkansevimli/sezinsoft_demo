@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sezinsoft_demo/constants.dart';
+import 'package:sezinsoft_demo/core/providers/general_provider.dart';
 import 'package:sezinsoft_demo/core/utilities/color_utils.dart';
 import 'package:sezinsoft_demo/core/utilities/font_style_utils.dart';
 import 'package:sezinsoft_demo/size_config.dart';
@@ -22,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<GeneralProvider>(context);
     return ViewModelBuilder<HomeViewModel>.reactive(
         viewModelBuilder: () => HomeViewModel(context),
         onModelReady: (model) async {
@@ -70,6 +73,65 @@ class _HomeScreenState extends State<HomeScreen> {
                                               description:
                                                   e.productPrice.toString() +
                                                       e.productCurrency,
+                                              itemCount: provider
+                                                          .shoppingList !=
+                                                      null
+                                                  ? e.count
+                                                  : provider.shoppingList!
+                                                          .contains(provider
+                                                              .shoppingList!
+                                                              .where((element) =>
+                                                                  element
+                                                                      .productId ==
+                                                                  e.productId)
+                                                              .first)
+                                                      ? provider.shoppingList!
+                                                          .where((element) =>
+                                                              element
+                                                                  .productId ==
+                                                              e.productId)
+                                                          .first
+                                                          .count
+                                                      : e.count,
+                                              onAdd: () {
+                                                setState(() {
+                                                  e.count = 1;
+                                                  provider.addShoppingList(e);
+                                                });
+                                              },
+                                              onMinusTap: () {
+                                                setState(() {
+                                                  if (e.count == 1) {
+                                                    provider.shoppingList!
+                                                        .remove(e);
+                                                  } else {
+                                                    int a = provider
+                                                        .shoppingList!
+                                                        .lastIndexOf(provider
+                                                            .shoppingList!
+                                                            .where((element) =>
+                                                                element == e)
+                                                            .first);
+                                                    print(a.toString());
+                                                  }
+                                                  e.count--;
+                                                });
+                                                print("current list: " +
+                                                    provider
+                                                        .shoppingList!.length
+                                                        .toString());
+                                              },
+                                              onPlusTap: () {
+                                                setState(() {
+                                                  provider.shoppingList!
+                                                          .where((element) =>
+                                                              element == e)
+                                                          .first
+                                                          .count +
+                                                      1;
+                                                  e.count++;
+                                                });
+                                              },
                                             ))
                                         .toList()),
                           ),
@@ -158,7 +220,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: TextButton.icon(
               clipBehavior: Clip.none,
-              onPressed: () {},
+              onPressed: () {
+
+              },
               icon: const Icon(
                 Icons.shopping_bag,
                 color: Colors.white,

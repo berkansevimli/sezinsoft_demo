@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:sezinsoft_demo/view/screens/home/model/product/product_model.dart';
 
 class GeneralProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
-
-  String? _errorMessage;
-  String? get errorMessage => _errorMessage;
-
-//Values
 
   void setLoading(val) {
     _isLoading = val;
     notifyListeners();
   }
 
-  void setMessage(message) {
-    _errorMessage = message;
+  List<Datum>? _shoppingList = [];
+  List<Datum>? get shoppingList => _shoppingList;
+
+  void addShoppingList(Datum val) {
+    _shoppingList!.add(val);
+    notifyListeners();
+  }
+
+  void updateCount(int index, bool isAdd) {
+    _shoppingList![index].count = isAdd
+        ? _shoppingList![index].count + 1
+        : _shoppingList![index].count - 1;
     notifyListeners();
   }
 }

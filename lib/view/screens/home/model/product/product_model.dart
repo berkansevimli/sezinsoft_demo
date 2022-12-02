@@ -34,15 +34,15 @@ class ProductModel {
 }
 
 class Datum {
-  Datum({
-    required this.productId,
-    required this.productName,
-    required this.productPrice,
-    required this.productCurrency,
-    required this.productPhoto,
-    required this.categoryId,
-    required this.categoryName,
-  });
+  Datum(
+      {required this.productId,
+      required this.productName,
+      required this.productPrice,
+      required this.productCurrency,
+      required this.productPhoto,
+      required this.categoryId,
+      required this.categoryName,
+      required this.count});
 
   int productId;
   String productName;
@@ -51,16 +51,17 @@ class Datum {
   String productPhoto;
   int categoryId;
   String categoryName;
+  int count;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        productId: json["product_id"],
-        productName: json["product_name"],
-        productPrice: json["product_price"].toDouble(),
-        productCurrency: json["product_currency"],
-        productPhoto: json["product_photo"],
-        categoryId: json["category_id"],
-        categoryName: json["category_name"],
-      );
+      productId: json["product_id"],
+      productName: json["product_name"],
+      productPrice: json["product_price"].toDouble(),
+      productCurrency: json["product_currency"],
+      productPhoto: json["product_photo"],
+      categoryId: json["category_id"],
+      categoryName: json["category_name"],
+      count: 0);
 
   Map<String, dynamic> toJson() => {
         "product_id": productId,
