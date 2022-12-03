@@ -33,16 +33,17 @@ class _HomeScreenState extends State<HomeScreen> {
         onModelReady: (model) async {
           prefs = await SharedPreferences.getInstance();
           String? token = prefs!.getString("token")!;
-
-          if (token != null) {
-            model.getUser(token: token);
-            await model.getCategories(token: token);
-            model.category!.data.forEach((element) {
-              categoryList.add(element);
-            });
-            model.getProducts(
-                token: token, id: model.category!.data.first.categoryId);
+          //Get User Data
+          model.getUser(token: token);
+          //Get Product Categories
+          await model.getCategories(token: token);
+          //Save categories as Local list
+          for (var element in model.category!.data) {
+            categoryList.add(element);
           }
+          //Get products
+          model.getProducts(
+              token: token, id: model.category!.data.first.categoryId);
         },
         builder: ((context, model, child) {
           return Scaffold(
@@ -54,18 +55,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   buildBagButton(provider),
                 ],
               ),
-              body: Column(
-                children: [
-                  buildTopView(model),
-                  SizedBox(
-                    height: getProportionateScreenHeight(8),
-                  ),
-                  model.busy
-                      ? CircularProgressIndicator()
-                      : Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: getProportionateScreenWidth(15)),
-                          child: SingleChildScrollView(
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    buildTopView(model),
+                    SizedBox(
+                      height: getProportionateScreenHeight(8),
+                    ),
+                    model.busy
+                        ? const CircularProgressIndicator()
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: getProportionateScreenWidth(15)),
                             child: Column(
                                 children: model.products == null
                                     ? []
@@ -119,8 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ))
                                         .toList()),
                           ),
-                        )
-                ],
+                  ],
+                ),
               ));
         }));
   }
@@ -149,9 +150,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     .map((e) => InkWell(
                           onTap: () {
                             setState(() {
-                              categoryList.forEach((element) {
+                              for (var element in categoryList) {
                                 element.isSelected = false;
-                              });
+                              }
                               e.isSelected = true;
                             });
                             model.getProducts(
@@ -190,14 +191,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  //Calculate total price of Bag's products
   double calculateSum(GeneralProvider provider) {
     double a = 0;
-    provider.shoppingList!.forEach((element) {
+    for (var element in provider.shoppingList!) {
       a = a + (element.productPrice * element.count);
-    });
+    }
     return a;
   }
 
+  //build bag button
   Padding buildBagButton(GeneralProvider provider) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -213,14 +216,15 @@ class _HomeScreenState extends State<HomeScreen> {
           child: TextButton.icon(
               clipBehavior: Clip.none,
               onPressed: () {
-                Get.to(ShoppingBag());
+                Get.to(const ShoppingBag());
               },
               icon: const Icon(
                 Icons.shopping_bag,
                 color: Colors.white,
               ),
               label: Text(
-                calculateSum(provider).toStringAsFixed(2).toString() + "₺",
+                //get rid of unwanted fraction at the end
+                "${calculateSum(provider).toStringAsFixed(2)}₺",
                 style: FontStyleUtilities.t1(fontColor: Colors.white),
               )),
         ),

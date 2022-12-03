@@ -54,9 +54,9 @@ class LoginViewModel extends BaseViewModel {
       if (response["response_text"] != "OK" || response["status_Code"] == 400) {
         showDialog(
             context: context,
-            builder: (builder) => AlertDialog(
-                  title: const Text("ERROR"),
-                  content: const Text("Error has occured with the login"),
+            builder: (builder) => const AlertDialog(
+                  title: Text("ERROR"),
+                  content: Text("Error has occured with the login"),
                 ));
       } else {
         if (response["response_text"] == "OK") {

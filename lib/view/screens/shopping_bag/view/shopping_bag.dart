@@ -31,10 +31,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
         onModelReady: (model) async {
           prefs = await SharedPreferences.getInstance();
           String? token = prefs!.getString("token")!;
-
-          if (token != null) {
-            model.getUser(token: token);
-          }
+          model.getUser(token: token);
         },
         builder: ((context, model, child) {
           return Scaffold(
@@ -42,7 +39,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
               appBar: AppBar(
                 backgroundColor: Colors.white,
                 elevation: 0,
-                leading: BackButton(
+                leading: const BackButton(
                   color: kPrimaryTextColor,
                 ),
                 actions: [
@@ -151,9 +148,9 @@ class _ShoppingBagState extends State<ShoppingBag> {
 
   double calculateSum(GeneralProvider provider) {
     double a = 0;
-    provider.shoppingList!.forEach((element) {
+    for (var element in provider.shoppingList!) {
       a = a + (element.productPrice * element.count);
-    });
+    }
     return a;
   }
 
