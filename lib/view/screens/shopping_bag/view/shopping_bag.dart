@@ -49,16 +49,16 @@ class _ShoppingBagState extends State<ShoppingBag> {
                   buildBagButton(provider),
                 ],
               ),
-              body: Column(
-                children: [
-                  buildTopView(model, provider),
-                  SizedBox(
-                    height: getProportionateScreenHeight(8),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: getProportionateScreenWidth(15)),
-                    child: SingleChildScrollView(
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    buildTopView(model, provider),
+                    SizedBox(
+                      height: getProportionateScreenHeight(8),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: getProportionateScreenWidth(15)),
                       child: Column(
                           children: provider.shoppingList == null
                               ? []
@@ -104,8 +104,11 @@ class _ShoppingBagState extends State<ShoppingBag> {
                                       ))
                                   .toList()),
                     ),
-                  )
-                ],
+                    SizedBox(
+                      height: getProportionateScreenHeight(40),
+                    )
+                  ],
+                ),
               ));
         }));
   }
@@ -133,7 +136,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                   fontColor: kPrimaryTextColor, fontWeight: FWT.light),
             ),
             Text(
-              "Tutar: " + calculateSum(provider).toString() + "₺",
+              "Tutar: ${calculateSum(provider).toStringAsFixed(2)}₺",
               style: FontStyleUtilities.h3(
                   fontColor: kPrimaryTextColor, fontWeight: FWT.light),
             ),
@@ -174,7 +177,7 @@ class _ShoppingBagState extends State<ShoppingBag> {
                 color: Colors.white,
               ),
               label: Text(
-                calculateSum(provider).toStringAsFixed(2).toString() + "₺",
+                "${calculateSum(provider).toStringAsFixed(2)}₺",
                 style: FontStyleUtilities.t1(fontColor: Colors.white),
               )),
         ),
