@@ -74,17 +74,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   e.productPrice.toString() +
                                                       e.productCurrency,
                                               itemCount: provider
-                                                          .shoppingList !=
-                                                      null
+                                                      .shoppingList!.isEmpty
                                                   ? e.count
                                                   : provider.shoppingList!
-                                                          .contains(provider
-                                                              .shoppingList!
-                                                              .where((element) =>
-                                                                  element
-                                                                      .productId ==
-                                                                  e.productId)
-                                                              .first)
+                                                          .where((element) =>
+                                                              element
+                                                                  .productId ==
+                                                              e.productId)
+                                                          .isNotEmpty
                                                       ? provider.shoppingList!
                                                           .where((element) =>
                                                               element
@@ -220,9 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: TextButton.icon(
               clipBehavior: Clip.none,
-              onPressed: () {
-
-              },
+              onPressed: () {},
               icon: const Icon(
                 Icons.shopping_bag,
                 color: Colors.white,
