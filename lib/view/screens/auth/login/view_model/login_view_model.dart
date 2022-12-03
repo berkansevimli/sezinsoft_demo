@@ -57,13 +57,6 @@ class LoginViewModel extends BaseViewModel {
             builder: (builder) => AlertDialog(
                   title: const Text("ERROR"),
                   content: const Text("Error has occured with the login"),
-                  actions: [
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text("OKAY"))
-                  ],
                 ));
       } else {
         if (response["response_text"] == "OK") {

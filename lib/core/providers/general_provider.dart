@@ -19,10 +19,23 @@ class GeneralProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateCount(int index, bool isAdd) {
-    _shoppingList![index].count = isAdd
-        ? _shoppingList![index].count + 1
-        : _shoppingList![index].count - 1;
+  void minusCount(Datum e) {
+    int index = _shoppingList!
+        .indexWhere((element) => element.productId == e.productId);
+    if (_shoppingList![index].count == 1) {
+      _shoppingList!.removeAt(index);
+      notifyListeners();
+    } else {
+      _shoppingList![index].count = _shoppingList![index].count - 1;
+    }
+    notifyListeners();
+  }
+
+  void plusCount(Datum e) {
+    int index = _shoppingList!
+        .indexWhere((element) => element.productId == e.productId);
+    _shoppingList![index].count = _shoppingList![index].count + 1;
+
     notifyListeners();
   }
 }

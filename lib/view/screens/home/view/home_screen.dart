@@ -7,6 +7,7 @@ import 'package:sezinsoft_demo/core/utilities/font_style_utils.dart';
 import 'package:sezinsoft_demo/size_config.dart';
 import 'package:sezinsoft_demo/view/common_widgets/product_card.dart';
 import 'package:sezinsoft_demo/view/screens/home/model/product/category_model.dart';
+import 'package:sezinsoft_demo/view/screens/home/model/product/product_model.dart';
 import 'package:sezinsoft_demo/view/screens/home/view_model/home_view_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   SharedPreferences? prefs;
-  List<Datum> categoryList = [];
+  List<CategoryData> categoryList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Colors.white,
                 elevation: 0,
                 actions: [
-                  buildBagButton(),
+                  buildBagButton(provider),
                 ],
               ),
               body: Column(
@@ -73,61 +74,45 @@ class _HomeScreenState extends State<HomeScreen> {
                                               description:
                                                   e.productPrice.toString() +
                                                       e.productCurrency,
-                                              itemCount: provider
-                                                      .shoppingList!.isEmpty
-                                                  ? e.count
-                                                  : provider.shoppingList!
-                                                          .where((element) =>
-                                                              element
-                                                                  .productId ==
-                                                              e.productId)
-                                                          .isNotEmpty
-                                                      ? provider.shoppingList!
-                                                          .where((element) =>
-                                                              element
-                                                                  .productId ==
-                                                              e.productId)
-                                                          .first
-                                                          .count
-                                                      : e.count,
+                                              itemCount: provider.shoppingList!
+                                                      .where((element) =>
+                                                          element.productId ==
+                                                          e.productId)
+                                                      .isNotEmpty
+                                                  ? provider.shoppingList!
+                                                      .where((element) =>
+                                                          element.productId ==
+                                                          e.productId)
+                                                      .first
+                                                      .count
+                                                  : 0,
                                               onAdd: () {
                                                 setState(() {
                                                   e.count = 1;
-                                                  provider.addShoppingList(e);
+                                                  provider.addShoppingList(
+                                                      Datum(
+                                                          productId:
+                                                              e.productId,
+                                                          productName:
+                                                              e.productName,
+                                                          productPrice:
+                                                              e.productPrice,
+                                                          productCurrency:
+                                                              e.productCurrency,
+                                                          productPhoto:
+                                                              e.productPhoto,
+                                                          categoryId:
+                                                              e.categoryId,
+                                                          categoryName:
+                                                              e.categoryName,
+                                                          count: 1));
                                                 });
                                               },
                                               onMinusTap: () {
-                                                setState(() {
-                                                  if (e.count == 1) {
-                                                    provider.shoppingList!
-                                                        .remove(e);
-                                                  } else {
-                                                    int a = provider
-                                                        .shoppingList!
-                                                        .lastIndexOf(provider
-                                                            .shoppingList!
-                                                            .where((element) =>
-                                                                element == e)
-                                                            .first);
-                                                    print(a.toString());
-                                                  }
-                                                  e.count--;
-                                                });
-                                                print("current list: " +
-                                                    provider
-                                                        .shoppingList!.length
-                                                        .toString());
+                                                provider.minusCount(e);
                                               },
                                               onPlusTap: () {
-                                                setState(() {
-                                                  provider.shoppingList!
-                                                          .where((element) =>
-                                                              element == e)
-                                                          .first
-                                                          .count +
-                                                      1;
-                                                  e.count++;
-                                                });
+                                                provider.plusCount(e);
                                               },
                                             ))
                                         .toList()),
@@ -203,7 +188,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Padding buildBagButton() {
+  double calculateSum(GeneralProvider provider) {
+    double a = 0;
+    provider.shoppingList!.forEach((element) {
+      a = a + (element.productPrice * element.count);
+    });
+    return a;
+  }
+
+  Padding buildBagButton(GeneralProvider provider) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -223,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white,
               ),
               label: Text(
-                "45,65 ₺",
+                calculateSum(provider).toStringAsFixed(2).toString() + "₺",
                 style: FontStyleUtilities.t1(fontColor: Colors.white),
               )),
         ),

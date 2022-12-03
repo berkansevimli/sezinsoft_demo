@@ -18,13 +18,14 @@ class ProductCategory {
 
   int responseVal;
   String responseText;
-  List<Datum> data;
+  List<CategoryData> data;
 
   factory ProductCategory.fromJson(Map<String, dynamic> json) =>
       ProductCategory(
         responseVal: json["response_val"],
         responseText: json["response_text"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        data: List<CategoryData>.from(
+            json["data"].map((x) => CategoryData.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -34,8 +35,8 @@ class ProductCategory {
       };
 }
 
-class Datum {
-  Datum(
+class CategoryData {
+  CategoryData(
       {required this.categoryId,
       required this.categoryName,
       required this.isSelected});
@@ -44,7 +45,7 @@ class Datum {
   String categoryName;
   bool isSelected;
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory CategoryData.fromJson(Map<String, dynamic> json) => CategoryData(
       categoryId: json["category_id"],
       categoryName: json["category_name"],
       isSelected: false);
