@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sezinsoft_demo/constants.dart';
 import 'package:sezinsoft_demo/core/providers/general_provider.dart';
@@ -9,6 +10,7 @@ import 'package:sezinsoft_demo/view/common_widgets/product_card.dart';
 import 'package:sezinsoft_demo/view/screens/home/model/product/category_model.dart';
 import 'package:sezinsoft_demo/view/screens/home/model/product/product_model.dart';
 import 'package:sezinsoft_demo/view/screens/home/view_model/home_view_model.dart';
+import 'package:sezinsoft_demo/view/screens/shopping_bag/view/shopping_bag.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 
@@ -210,7 +212,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: TextButton.icon(
               clipBehavior: Clip.none,
-              onPressed: () {},
+              onPressed: () {
+                Get.to(ShoppingBag());
+              },
               icon: const Icon(
                 Icons.shopping_bag,
                 color: Colors.white,
